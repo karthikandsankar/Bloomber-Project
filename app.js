@@ -113,6 +113,12 @@ function scan(funcData, path, div){
 	}
 }
 
+function objParse(obj){
+	for(var prop in obj) {
+
+	}
+}
+
 var tab = document.createElement("pre")
 tab.innerHTML = "&#09;";
 tab.style.display = "inline";
@@ -307,13 +313,12 @@ function settingChanged(){
 	}else{
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideUp();
-		
+
 		var request = new XMLHttpRequest();
 		request.open("GET", "SBHSData.json", false);
 		request.onreadystatechange = function() {
 		  if ( request.readyState === 4 && request.status === 200 ) {
-		    var my_JSON_object = JSON.parse(request.responseText);
-		    console.log(my_JSON_object);
+		    textToJSON(request.responseText);
 		  }
 		}
 		request.send(null);
