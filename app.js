@@ -316,3 +316,7 @@ request.onreadystatechange = function() {
   }
 }
 request.send(null);
+
+if(document.getElementById("customFile").files[0].type=="application/json"){
+
+}
