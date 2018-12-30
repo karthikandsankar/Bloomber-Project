@@ -307,11 +307,11 @@ function objChanged(NewObj){
 	scan(NewObj,[],containingDiv);
 }
 
-var request = new XMLHttpRequest();
+/*var request = new XMLHttpRequest();
 request.open("GET", "SBHSData.json", false);
 request.send()
 var my_JSON_object = JSON.parse(request.responseText);
-alert (my_JSON_object.result[0]);
+alert (my_JSON_object.result[0]);*/
 
 var request = new XMLHttpRequest();
 request.open("GET", "SBHSData.json", false);
