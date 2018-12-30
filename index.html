@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Bloomberg Project</title>
+  </head>
+  <body>
+    <!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">JSON Assistant</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <button style="margin-right:10px;" class="btn btn-outline-success" type="button"></button>
+          <button class="btn btn-outline-secondary" type="button">Smaller button</button>
+        </form>
+      </div>
+    </nav>-->
+    <div id="jsonInputPanel">
+    <div id="jsonInput" style="border:1px solid;border-radius: 7px;min-height:30vh;" contenteditable>
+      </div>
+      <br>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+      </div>
+    </div>
+
+      <br>
+      <div id="settings" class="container form-inline d-flex justify-content-between">
+
+        <div class="input-group mb-3 align-middle" style="margin:5px!important">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="displayStyle">Display Style</label>
+          </div>
+          <select class="custom-select" onchange="settingChanged()" id="displayStyle">
+            <option selected value="Compact">Compact</option>
+            <option value="Linear">Linear</option>
+          </select>
+        </div>
+
+        <div class="input-group mb-3 align-middle" style="margin:5px!important">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="iconsDisplay">Icons</label>
+          </div>
+          <select class="custom-select" onchange="settingChanged()" id="iconsDisplay">
+            <option selected value="Show">Show</option>
+            <option value="Hide">Hide</option>
+          </select>
+        </div>
+
+
+
+          <div class="btn-group btn-group-toggle" data-toggle="buttons" >
+            <div class="input-group-prepend">
+              <div class="input-group-text" id="btnGroupAddon">Input type</div>
+            </div>
+            <label  class="btn btn-outline-secondary active" >
+              <input id="Input Field" type="radio" name="options" id="option1" autocomplete="off" onchange="settingChanged()" checked> Input Field
+            </label>
+            <label class="btn btn-outline-secondary" >
+              <input id="JSON file" type="radio" name="options" id="option2"  autocomplete="off" onchange="settingChanged()"> JSON file
+            </label>
+          </div>
+      </div>
+
+      <br>
+      <div id="jsonInputMessage" class="alert alert-danger" role="alert" style="display:none">
+      </div>
+
+    <div id = "containingDiv"></div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+
+  </body>
+</html>
