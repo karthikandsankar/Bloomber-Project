@@ -309,12 +309,6 @@ function objChanged(NewObj){
 
 var request = new XMLHttpRequest();
 request.open("GET", "SBHSData.json", false);
-request.send()
-var my_JSON_object = JSON.parse(request.responseText);
-alert (my_JSON_object);
-
-var request = new XMLHttpRequest();
-request.open("GET", "SBHSData.json", false);
 request.onreadystatechange = function() {
   if ( request.readyState === 4 && request.status === 200 ) {
     var my_JSON_object = JSON.parse(request.responseText);
