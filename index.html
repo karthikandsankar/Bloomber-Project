@@ -30,17 +30,16 @@
       </div>
     </nav>-->
     <div id="jsonInputPanel">
-    <div id="jsonInput" style="border:1px solid;border-radius: 7px;min-height:30vh;" contenteditable>
-      </div>
+    <div id="jsonInput" style="border:1px solid;border-radius: 7px;min-height:30vh;" contenteditable></div>
       <br>
       <div class="text-center">
-        <button type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="initPlainTextInput()">Submit</button>
       </div>
     </div>
 
-    <div class="custom-file">
-      <input type="file" class="custom-file-input" id="customFile" accept="application/json">
-      <label class="custom-file-label" for="customFile">Choose file</label>
+    <div class="custom-file" id="JSONuploadFileDiv">
+      <input type="file" class="custom-file-input" id="JSONuploadFile" accept="application/json" onchange="fileUploaded();">
+      <label class="custom-file-label" for="JSONuploadFile">Choose file</label>
     </div>
 
       <br>

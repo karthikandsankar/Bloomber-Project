@@ -2,13 +2,19 @@ var obj;
 
 function initPlainTextInput(){
  var text = document.getElementById("jsonInput").innerText
+	textToJSON(text)
 
-	if(text==null||text==""){
+}
+
+function textToJSON(str){
+	if(str==null||str==""){
 		displayError("There is no JSON inputed");
 	}else{
 		try {
-			obj = JSON.parse(text);
+			obj = JSON.parse(str);
 			objChanged(obj);
+			$( "#jsonInputPanel" ).slideUp();
+			$( "#JSONuploadFileDiv" ).slideUp();
 		}catch(err) {
 			displayError(err.message);
 		}
@@ -18,6 +24,8 @@ function initPlainTextInput(){
 function displayError(message){
 	document.getElementById("jsonInputMessage").innerHTML = message;
 	document.getElementById("jsonInputMessage").style.display="block";
+	if(message==""||message==null)
+		document.getElementById("jsonInputMessage").style.display="none";
 }
 
 
@@ -278,8 +286,9 @@ function EditWithPath (newobj, path,newVal) {
   newobj[path.pop()] = newVal;
 }
 
-var linear = false;
-var icons = true;
+var linear;
+var icons;
+settingChanged();
 function settingChanged(){
 	if(document.getElementById("displayStyle").value=="Compact")
 		linear = false;
@@ -290,14 +299,24 @@ function settingChanged(){
 	else
 		icons = false;
 	if(document.getElementById("Input Field").checked){
-		icons = true;
 		$( "#jsonInputPanel" ).slideDown()
+		$( "#JSONuploadFileDiv" ).slideUp();
 	}else if(document.getElementById("JSON file").checked){
 		$( "#jsonInputPanel" ).slideUp()
-		icons = true;
+		$( "#JSONuploadFileDiv" ).slideDown();
 	}else{
 		$( "#jsonInputPanel" ).slideUp()
-		icons = false;
+		$( "#JSONuploadFileDiv" ).slideUp();
+		
+		var request = new XMLHttpRequest();
+		request.open("GET", "SBHSData.json", false);
+		request.onreadystatechange = function() {
+		  if ( request.readyState === 4 && request.status === 200 ) {
+		    var my_JSON_object = JSON.parse(request.responseText);
+		    console.log(my_JSON_object);
+		  }
+		}
+		request.send(null);
 	}
 		objChanged(obj);
 }
@@ -307,16 +326,30 @@ function objChanged(NewObj){
 	scan(NewObj,[],containingDiv);
 }
 
-var request = new XMLHttpRequest();
-request.open("GET", "SBHSData.json", false);
-request.onreadystatechange = function() {
-  if ( request.readyState === 4 && request.status === 200 ) {
-    var my_JSON_object = JSON.parse(request.responseText);
-    console.log(my_JSON_object);
-  }
-}
-request.send(null);
 
-if(document.getElementById("customFile").files[0].type=="application/json"){
-
+function fileUploaded(){
+	var file = document.getElementById("JSONuploadFile").files[0]
+	if(file.type=="application/json"){
+			$("#JSONuploadFileDiv").slideUp();
+			fr = new FileReader();
+			fr.onload = function(){
+				textToJSON(fr.result);
+			}
+			fr.readAsText(file);
+	}else{
+		displayError("File is not the correct format");
+	}
 }
+
+document.getElementById("jsonInput").addEventListener('paste', function(event) {
+    // cancel paste
+    event.preventDefault();
+
+    // get text representation of clipboard
+    var text = event.clipboardData.getData('text/plain');
+		//document.getElementById("jsonInput").innerHTML = text;
+		textToJSON(text);
+
+    // parse text yourself
+    // YOUR CODE HERE
+});
