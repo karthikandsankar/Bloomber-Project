@@ -13,8 +13,15 @@ function textToJSON(str){
 		try {
 			obj = JSON.parse(str);
 			objChanged(obj);
+			objParse(obj);
+			if(outliers[0]){
+				document.querySelectorAll('[data-path-0="'+outliers[0]+'"]')[0].scrollIntoView( true );
+				displayWarning("It looks like item <strong>"+outliers[0]+"</strong> doesnt match the rest of the objects");
+				outliers.shift();
+			}
 			$( "#jsonInputPanel" ).slideUp();
 			$( "#JSONuploadFileDiv" ).slideUp();
+			displayError("");
 		}catch(err) {
 			displayError(err.message);
 		}
@@ -22,12 +29,30 @@ function textToJSON(str){
 }
 
 function displayError(message){
-	document.getElementById("jsonInputMessage").innerHTML = message;
+	document.getElementById("jsonInputMessage").innerText = message;
 	document.getElementById("jsonInputMessage").style.display="block";
 	if(message==""||message==null)
 		document.getElementById("jsonInputMessage").style.display="none";
 }
 
+var warn = document.getElementById("warning")
+
+function displayWarning(message){
+	if(!document.getElementById("warning"))
+		document.body.appendChild(warn)
+	document.getElementById("warningText").innerHTML = message;
+	document.getElementById("warning").style.display="block";
+	if(message==""||message==null)
+		document.getElementById("warning").style.display="none";
+}
+
+function closedWarning(){
+	if(outliers[0]){
+		document.querySelectorAll('[data-path-0="'+outliers[0]+'"]')[0].scrollIntoView( true );
+		setTimeout(displayWarning, 100,"It looks like item <strong>"+outliers[0]+"</strong> doesnt match the rest of the objects");
+		outliers.shift();
+	}
+}
 
 var containingDiv = document.getElementById("containingDiv");
 
@@ -113,10 +138,26 @@ function scan(funcData, path, div){
 	}
 }
 
+var outliers = [];
 function objParse(obj){
-	for(var prop in obj) {
-
-	}
+	var counts={}
+		for(var prop in obj) {
+			if(!counts[Object.keys(obj[prop]).length])
+				counts[Object.keys(obj[prop]).length]=0;
+			counts[Object.keys(obj[prop]).length]++;
+		}
+		var childNum;
+		for(var num in counts) {
+			if(counts[num]/Object.keys(obj).length>=.90)
+				childNum = num;
+		}
+		if(childNum){
+			for(var prop in obj) {
+				if(Object.keys(obj[prop]).length!=childNum)
+					outliers.push(prop);
+			}
+		}
+		//document.querySelectorAll('[data-path-0="'++'"]');
 }
 
 var tab = document.createElement("pre")

@@ -8,11 +8,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Bloomberg Project</title>
+    <title>Server Analytics</title>
   </head>
   <body>
-    <!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">JSON Assistant</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+      <a class="navbar-brand" href="#">Server Analytics</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -28,7 +28,9 @@
           <button class="btn btn-outline-secondary" type="button">Smaller button</button>
         </form>
       </div>
-    </nav>-->
+    </nav>
+
+
     <div id="jsonInputPanel">
     <div id="jsonInput" style="border:1px solid;border-radius: 7px;min-height:30vh;" contenteditable></div>
       <br>
@@ -87,6 +89,17 @@
       <div id="jsonInputMessage" class="alert alert-danger" role="alert" style="display:none"></div>
 
     <div id = "containingDiv"></div>
+
+
+    <br><br><br>
+
+
+    <div id="warning" class="alert alert-warning" style="display:none;position: fixed;bottom: 0;width:100%;">
+      <span id="warningText"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="closedWarning()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
