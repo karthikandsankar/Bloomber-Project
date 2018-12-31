@@ -14,11 +14,7 @@ function textToJSON(str){
 			obj = JSON.parse(str);
 			objChanged(obj);
 			objParse(obj);
-			if(outliers[0]){
-				document.querySelectorAll('[data-path-0="'+outliers[0]+'"]')[0].scrollIntoView( true );
-				displayWarning("It looks like item <strong>"+outliers[0]+"</strong> doesnt match the rest of the objects");
-				outliers.shift();
-			}
+			closedWarning();
 			$( "#jsonInputPanel" ).slideUp();
 			$( "#JSONuploadFileDiv" ).slideUp();
 			displayError("");
@@ -49,6 +45,8 @@ function displayWarning(message){
 function closedWarning(){
 	if(outliers[0]){
 		document.querySelectorAll('[data-path-0="'+outliers[0]+'"]')[0].scrollIntoView( true );
+		if ((window.innerHeight + window.scrollY) < document.body.offsetHeight)
+			window.scrollBy(0, -60);
 		setTimeout(displayWarning, 100,"It looks like item <strong>"+outliers[0]+"</strong> doesnt match the rest of the objects");
 		outliers.shift();
 	}
@@ -348,12 +346,15 @@ function settingChanged(){
 	if(document.getElementById("Input Field").checked){
 		$( "#jsonInputPanel" ).slideDown()
 		$( "#JSONuploadFileDiv" ).slideUp();
+		document.getElementById("Input Field").checked = false;
 	}else if(document.getElementById("JSON file").checked){
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideDown();
+		document.getElementById("JSON file").checked = false;
 	}else{
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideUp();
+		document.getElementById("JSON in folder").checked = false;
 
 		var request = new XMLHttpRequest();
 		request.open("GET", "SBHSData.json", false);
@@ -368,10 +369,15 @@ function settingChanged(){
 }
 
 function objChanged(NewObj){
+	localStorage.setItem('obj', JSON.stringify(NewObj))
 	clearDiv(containingDiv);
 	scan(NewObj,[],containingDiv);
 }
 
+if(localStorage.getItem('obj')){
+	obj = JSON.parse(localStorage.getItem('obj'));
+	objChanged(obj);
+}
 
 function fileUploaded(){
 	var file = document.getElementById("JSONuploadFile").files[0]
