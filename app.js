@@ -365,18 +365,22 @@ function settingChanged(){
 		}
 		request.send(null);
 	}
+		if(obj!=null){
 		objChanged(obj);
+		}
 }
 
 function objChanged(NewObj){
-	localStorage.setItem('obj', JSON.stringify(NewObj))
+	sessionStorage.setItem('obj', JSON.stringify(NewObj))
 	clearDiv(containingDiv);
 	scan(NewObj,[],containingDiv);
 }
 
-if(localStorage.getItem('obj')){
-	obj = JSON.parse(localStorage.getItem('obj'));
-	objChanged(obj);
+window.onload = function() {
+	if(sessionStorage.getItem('obj')!="\"undefined\""&&sessionStorage.getItem('obj')!=null){
+		obj = JSON.parse(sessionStorage.getItem('obj'));
+		objChanged(obj);
+	}
 }
 
 function fileUploaded(){
