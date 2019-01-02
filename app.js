@@ -385,10 +385,20 @@ function EditWithPath (newobj, path,newVal) {
   newobj[path.pop()] = newVal;
 }
 
+window.onload = function() {
+	if(sessionStorage.getItem('obj')!="\"undefined\""&&sessionStorage.getItem('obj')!=null){
+		obj = JSON.parse(sessionStorage.getItem('obj'));
+		objChanged(obj);
+	}else{
+			document.getElementById("Input Field").checked = true
+			document.getElementById("Input Field label").classList.add("active");
+	}
+	settingChanged();
+}
+
 var linear;
 var icons;
 
-settingChanged();
 function settingChanged(){
 	if(document.getElementById("displayStyle").value=="Compact")
 		linear = false;
@@ -436,15 +446,6 @@ function objChanged(NewObj){
 	sessionStorage.setItem('obj', JSON.stringify(NewObj))
 	clearDiv(containingDiv);
 	scan(NewObj,[],containingDiv);
-}
-
-window.onload = function() {
-	if(sessionStorage.getItem('obj')!="\"undefined\""&&sessionStorage.getItem('obj')!=null){
-		obj = JSON.parse(sessionStorage.getItem('obj'));
-		objChanged(obj);
-	}else{
-			document.getElementById("Input Field").checked = true
-	}
 }
 
 function fileUploaded(){
