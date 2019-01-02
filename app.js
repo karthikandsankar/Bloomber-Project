@@ -31,6 +31,11 @@ function displayError(message){
 		document.getElementById("jsonInputMessage").style.display="none";
 }
 
+function displayFloatingError(message){
+	document.getElementById("floatingError").innerText = message;
+	$("#floatingError").slideDown().delay(1000).slideUp();
+}
+
 var warn = document.getElementById("warning")
 
 function displayWarning(message){
@@ -44,10 +49,11 @@ function displayWarning(message){
 
 function closedWarning(){
 	if(outliers[0]){
-		document.querySelectorAll('[data-path-0="'+outliers[0]+'"]')[0].scrollIntoView( true );
+		document.querySelectorAll('[data-path-0="'+outliers[0]["name"]+'"]')[0].scrollIntoView( true );
+		document.querySelectorAll('[data-path-0="'+outliers[0]["name"]+'"]')[0].style.backgroundColor = "red";
 		if ((window.innerHeight + window.scrollY) < document.body.offsetHeight)
 			window.scrollBy(0, -60);
-		setTimeout(displayWarning, 100,"It looks like item <strong>"+outliers[0]+"</strong> doesnt match the rest of the objects");
+		setTimeout(displayWarning, 100,outliers[0]["error"]);
 		outliers.shift();
 	}
 }
@@ -140,19 +146,63 @@ var outliers = [];
 function objParse(obj){
 	var counts={}
 		for(var prop in obj) {
-			if(!counts[Object.keys(obj[prop]).length])
-				counts[Object.keys(obj[prop]).length]=0;
-			counts[Object.keys(obj[prop]).length]++;
+			for(var subProp in obj[prop]) {
+				if(!counts[subProp])
+					counts[subProp]=0;
+				counts[subProp]++;
+			}
 		}
-		var childNum;
+		var childNums =[];
 		for(var num in counts) {
 			if(counts[num]/Object.keys(obj).length>=.90)
-				childNum = num;
+				childNums.push(num);
 		}
-		if(childNum){
+		var validItems = 0
+		for(var num of childNums){
+			for(var prop in obj){
+				if(Number(obj[prop][num])){
+					validItems++
+				}
+			}
+			if(validItems/Object.keys(obj).length>=.90){
+				for(var prop in obj){
+					if(obj[prop][num]==""){
+						obj[prop][num]="0";
+					}
+				}
+			}
+		}
+		if(childNums!=[]){
 			for(var prop in obj) {
-				if(Object.keys(obj[prop]).length!=childNum)
-					outliers.push(prop);
+					for(var num of childNums){
+						if(obj[prop][num]=="")
+							outliers.push({"name":prop,"error":"The property <strong>\""+num+"\"</strong> in item <strong>\""+prop+"\"</strong> has a blank string"});
+					}
+
+
+					if(Object.keys(obj[prop]).sort().join(',')!== childNums.sort().join(',')){
+						var err = "It looks like item <strong>"+prop+"</strong> is missing the ";
+						var errors=[]
+						for(var num of childNums){
+							if(!Object.keys(obj[prop]).includes(num))
+								errors.push(num);
+						}
+						if(errors.length==1){
+							err+="property <strong>\""+errors[0]+"\"</strong>"
+						}else{
+							err+=" properties: "
+							for(var i=0; i!=errors.length;i++){
+								if(i!=errors.length-1)
+									err+="<strong>\""+errors[i]+"\"</strong>, "
+								else
+									err+="and <strong>\""+errors[i]+"\"</strong>"
+							}
+						}
+
+					    outliers.push({"name":prop,"error":err});
+					}else{
+
+					}
 			}
 		}
 		//document.querySelectorAll('[data-path-0="'++'"]');
@@ -269,9 +319,13 @@ function editObj(elem){
 		console.log(headerBar);
 	}else{
 		console.log(parentElem.childNodes[1].innerText);
-		var newObj=JSON.parse((parentElem.childNodes[1].innerText).replace(/\s/g, ''));
-		EditWithPath(obj,props,newObj);
-		objChanged(obj);
+		try{
+			var newObj=JSON.parse((parentElem.childNodes[1].innerText).replace(/\s/g, ''));
+			EditWithPath(obj,props,newObj);
+			objChanged(obj);
+		}catch(err){
+			displayFloatingError(err);
+		}
 	}
 
 	//
@@ -333,6 +387,7 @@ function EditWithPath (newobj, path,newVal) {
 
 var linear;
 var icons;
+
 settingChanged();
 function settingChanged(){
 	if(document.getElementById("displayStyle").value=="Compact")
@@ -351,7 +406,7 @@ function settingChanged(){
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideDown();
 		document.getElementById("JSON file").checked = false;
-	}else{
+	}else if(document.getElementById("JSON file").checked){
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideUp();
 		document.getElementById("JSON in folder").checked = false;
@@ -364,6 +419,9 @@ function settingChanged(){
 		  }
 		}
 		request.send(null);
+	}else{
+		$( "#jsonInputPanel" ).slideUp()
+		$( "#JSONuploadFileDiv" ).slideUp();
 	}
 		if(obj!=null){
 		objChanged(obj);
@@ -371,6 +429,10 @@ function settingChanged(){
 }
 
 function objChanged(NewObj){
+	if(NewObj)
+		document.getElementById("downloadJSON").style.display = "block"
+	else
+		document.getElementById("downloadJSON").style.display = "none"
 	sessionStorage.setItem('obj', JSON.stringify(NewObj))
 	clearDiv(containingDiv);
 	scan(NewObj,[],containingDiv);
@@ -380,6 +442,8 @@ window.onload = function() {
 	if(sessionStorage.getItem('obj')!="\"undefined\""&&sessionStorage.getItem('obj')!=null){
 		obj = JSON.parse(sessionStorage.getItem('obj'));
 		objChanged(obj);
+	}else{
+			document.getElementById("Input Field").checked = true
 	}
 }
 
@@ -398,14 +462,20 @@ function fileUploaded(){
 }
 
 document.getElementById("jsonInput").addEventListener('paste', function(event) {
-    // cancel paste
-    event.preventDefault();
-
-    // get text representation of clipboard
-    var text = event.clipboardData.getData('text/plain');
-		//document.getElementById("jsonInput").innerHTML = text;
-		textToJSON(text);
-
-    // parse text yourself
-    // YOUR CODE HERE
+		if(document.getElementById("jsonInput").innerHTML == ""){
+			// cancel paste
+	    event.preventDefault();
+	    // get text representation of clipboard
+	    var text = event.clipboardData.getData('text/plain');
+			//document.getElementById("jsonInput").innerHTML = text;
+			textToJSON(text);
+		}
 });
+
+function downloadJSON(){
+	var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
+	var dlAnchorElem = document.getElementById('downloadAnchorElem');
+	dlAnchorElem.setAttribute("href",     dataStr     );
+	dlAnchorElem.setAttribute("download", "server-data-JSON.json");
+	dlAnchorElem.click();
+}
