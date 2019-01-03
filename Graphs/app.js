@@ -11,7 +11,6 @@ var options = {
   displayModeBar: true, //this one does work
 };
 
-
 window.onload = function() {
 	if(sessionStorage.getItem('obj')=="\"undefined\""||sessionStorage.getItem('obj')==null){
     $("#errorMessage").slideDown();
@@ -110,7 +109,7 @@ function addRowToTable(property,type,average,occurrences)
          var newInput = input.cloneNode();
          newInput.value = "dependent"
 
-         if(occurrences/Object.keys(obj).length>=.1&&occurrences/Object.keys(obj).length<.9)
+         if(Number(average))
             newInput.checked = true;
           else
             newInput.checked = false;
@@ -141,9 +140,9 @@ function checkUpdated(){
         }
       }
     }
-      console.log(newVal)
-      if(!checked)
-        totalArrays[category]["rel"] = "independent";
+    console.log(newVal)
+    if(!checked)
+      totalArrays[category]["rel"] = "independent";
     if(newVal){
       totalArrays[category]["rel"] = newVal;
       for(var elem of document.getElementsByName(category)){
@@ -158,7 +157,8 @@ function checkUpdated(){
 }
 
 function generateGraphs(){
-document.getElementById("graphsOut").innerHTML ="";
+  var scrollPos = window.pageYOffset
+  var plotData=[]
   for(var category in totalArrays){
     if(totalArrays[category]["rel"]=="dependent"){
 
@@ -167,26 +167,78 @@ document.getElementById("graphsOut").innerHTML ="";
           if(totalArrays[secondcategory]["rel"]=="independent"){
             var lists = {}
             for(var sub in obj){
-              if(!lists[ obj[sub][secondcategory] ])
-                lists[ obj[sub][secondcategory] ]=[]
-              lists[ obj[sub][secondcategory] ].push(obj[sub][category]);
-            }
-            var data=[];
-            for(var list in lists){
-                data.push({
-                    y: lists[list],
-                    type: 'box',
-                    name: list,
-                });
+              if(Number(obj[sub][category])){
+                if(!lists[ obj[sub][secondcategory] ])
+                  lists[ obj[sub][secondcategory] ]=[]
+                lists[ obj[sub][secondcategory] ].push(Number(obj[sub][category]));
+              }
             }
 
-            var div = document.createElement("DIV");
-            var name = category + "vs" + secondcategory;
+            var name = category.charAt(0).toUpperCase() + category.slice(1) + " vs " + secondcategory.charAt(0).toUpperCase() + secondcategory.slice(1);
             console.log(name);
-            (document.getElementById("graphsOut")).appendChild(div);
-            div.id = name
 
-            setTimeout(Plotly.newPlot,100,name, data, {}, options);
+            var data=[];
+            var bar = true;
+            if(document.getElementById(name+"-sel")==null){
+              if(Object.keys(lists).length<15)
+                bar = false;
+            }else{
+              if(document.getElementById(name+"-sel").value == "Box and Wiskers")
+                bar = false;
+            }
+            if(!bar){
+              for(var list in lists){
+                  data.push({
+                      y: lists[list],
+                      type: 'box',
+                      name: list,
+                      jitter: 1,
+                  });
+              }
+              for (var i = 0; i < data.length; i++) {
+                let value = data[i]["y"]
+                let compare = (data[i]["y"].reduce((previous, current) => current += previous) / data[i]["y"].length)
+                for (var j = i - 1; j > -1 && (data[j]["y"].reduce((previous, current) => current += previous) / data[j]["y"].length) < compare; j--) {
+                  console.log((data[j]["y"].reduce((previous, current) => current += previous) / data[j]["y"].length))
+                  data[j + 1]["y"] = data[j]["y"]
+                }
+                data[j + 1]["y"] = value
+              }
+              console.log(data);
+            }else{
+              var x = [];
+              var y = [];
+              for(var list in lists){
+
+                let avg = lists[list].reduce((previous, current) => current += previous) / lists[list].length;
+
+                  x.push(list);
+                  y.push(avg);
+              }
+
+              //InsertionSort
+              for (var i = 0; i < y.length; i++) {
+                let value = y[i]
+                let value2 = x[i]
+                for (var j = i - 1; j > -1 && y[j] < value; j--) {
+                  y[j + 1] = y[j]
+                  x[j + 1] = x[j]
+                }
+                y[j + 1] = value
+                x[j + 1] = value2
+              }
+
+              data.push({
+                  y: y,
+                  x: x,
+                  type: 'bar',
+              });
+              console.log(data);
+            }
+
+            plotData.push({name:name, data:data, lay:{  yaxis: {title: category.charAt(0).toUpperCase() + category.slice(1),},xaxis: {title: secondcategory.charAt(0).toUpperCase() + secondcategory.slice(1),}}, "options":options,bar:bar})
+
+
 
           }
         }
@@ -194,6 +246,12 @@ document.getElementById("graphsOut").innerHTML ="";
 
     }
   }
+  document.getElementById("graphsOut").innerHTML ="";
+
+  for(var data of plotData){
+    createPlot(data.name, data.data, data.lay, data.options,data.bar);
+  }
+  setTimeout(window.scrollBy,200,0,scrollPos);
 
   setTimeout(cleanLogo,100);
 }
@@ -202,4 +260,50 @@ function cleanLogo(){
   for(var elem of document.querySelectorAll("[href='https://plot.ly/']")){
     elem.style.display = "none";
   }
+}
+
+function createPlot(name, data, lay, options,bar){
+  var header = document.createElement("DIV");
+  header.classList.add("form-inline");
+  header.classList.add("text-center");
+  header.classList.add("d-flex");
+  header.classList.add("justify-content-between");
+
+
+  var title = document.createElement("h3");
+  title.classList.add("text-center");
+  title.classList.add("display-4");
+  title.innerText = name
+  title.style.marginRight = "15px"
+  var newId = name+"-title";
+  header.appendChild(title);
+  console.log(title);
+  title.id = newId
+
+  var titleDiv = document.createElement("DIV");
+  var str1 =""
+  var str2 =""
+  if(bar)
+    str1 = "selected"
+  else
+    str2 = "selected"
+
+
+
+  var HTMLval ='<div class="input-group mb-3 align-middle" style="margin:5px!important"><div class="input-group-prepend"><label class="input-group-text" for="displayStyle">Style</label></div><select id="'+name.replace(/</g, "&lt;").replace(/>/g, "&gt;")+'-sel" class="custom-select" onchange="generateGraphs()"><option '+str1+' value="Bar Graph">Bar Graph</option><option '+str2+' value="Box and Wiskers">Box & Wiskers</option></select></div>';
+  titleDiv.classList.add("align-self-end");
+  titleDiv.classList.add("d-flex");
+  header.appendChild(titleDiv);
+
+  titleDiv.innerHTML = HTMLval;
+
+  (document.getElementById("graphsOut")).appendChild(header);
+
+  var div = document.createElement("DIV");
+  (document.getElementById("graphsOut")).appendChild(div);
+  div.id = name
+
+  console.log(div);
+  setTimeout(Plotly.newPlot,100,name, data, lay, options);
+
 }

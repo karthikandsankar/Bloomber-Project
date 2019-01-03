@@ -80,13 +80,13 @@
               <div class="input-group-text" id="btnGroupAddon">Input type</div>
             </div>
             <label id="Input Field label" class="btn btn-outline-secondary" >
-              <input id="Input Field" type="radio" name="options" id="option1" autocomplete="off" onchange="settingChanged()"> Input Field
+              <input id="Input Field" type="radio" name="options" id="option1" autocomplete="off" onchange="settingChanged()" data-toggle="tooltip" data-placement="bottom" title="A textbox to type out or paste in a JSON object"> Input Field
             </label>
             <label class="btn btn-outline-secondary" >
-              <input id="JSON file" type="radio" name="options" id="option2"  autocomplete="off" onchange="settingChanged()"> Upload JSON file
+              <input id="JSON file" type="radio" name="options" id="option2"  autocomplete="off" onchange="settingChanged()" data-toggle="tooltip" data-placement="bottom" title="Select a JSON file from your computer"> Upload file
             </label>
             <label class="btn btn-outline-secondary" >
-              <input id="JSON in folder" type="radio" name="options" id="option2"  autocomplete="off" onchange="settingChanged()"> JSON in same folder
+              <input id="JSON in folder" type="radio" name="options" id="option2"  autocomplete="off" onchange="settingChanged()" data-toggle="tooltip" data-placement="bottom" title="Use whatever JSON file is in the folder this webpage is in"> Use Default Values
             </label>
           </div>
 
@@ -123,6 +123,9 @@
       $(document).ready(function () {
         bsCustomFileInput.init()
       });
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
     </script>
     <script src="app.js"></script>
 
