@@ -416,7 +416,7 @@ function settingChanged(){
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideDown();
 		document.getElementById("JSON file").checked = false;
-	}else if(document.getElementById("JSON file").checked){
+	}else if(document.getElementById("JSON in folder").checked){
 		$( "#jsonInputPanel" ).slideUp()
 		$( "#JSONuploadFileDiv" ).slideUp();
 		document.getElementById("JSON in folder").checked = false;
