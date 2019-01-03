@@ -132,13 +132,17 @@ function checkUpdated(){
 
   for(var category in totalArrays){
     var newVal;
+    var checked=false;
     for(var elem of document.getElementsByName(category)){
-      if(elem.checked && totalArrays[category]["rel"] != elem.value){
-        newVal = elem.value;
+      if(elem.checked){
+        checked = true;
+        if(totalArrays[category]["rel"] != elem.value){
+          newVal = elem.value;
+        }
       }
     }
       console.log(newVal)
-      if(totalArrays[category]["rel"]==null)
+      if(!checked)
         totalArrays[category]["rel"] = "independent";
     if(newVal){
       totalArrays[category]["rel"] = newVal;
