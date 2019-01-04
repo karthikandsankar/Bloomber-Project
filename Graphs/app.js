@@ -3,7 +3,7 @@ var obj;
 
 var options = {
 
-  scrollZoom: true, // lets us scroll to zoom in and out - works
+  scrollZoom: false, // lets us scroll to zoom in and out - works
   showLink: false, // removes the link to edit on plotly - works
   modeBarButtonsToRemove: ['toImage', 'zoom2d', 'autoScale2d','toggleSpikelines','hoverClosestCartesian','hoverCompareCartesian','select2d','lasso2d'],
   //modeBarButtonsToAdd: ['lasso2d'],
