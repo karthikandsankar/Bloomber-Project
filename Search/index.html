@@ -24,7 +24,7 @@
           <li class="nav-item">
             <a class="nav-link" href="../index.html">Input </a>
           </li>
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" href="../Graphs/index.html">Graphs <span class="sr-only">(current)</span></a>
           </li>
         </ul>
@@ -37,40 +37,10 @@
 
     <div id="errorMessage" class="alert alert-danger" role="alert" style="display:none"><strong>No JSON file was inputed. Please <a href="../index.html">input</a> one!</strong></div>
 
-    <div id="graphs" style="display:none" class="container-fluid">
-
-      <div>
-        <h1 class="display-1 text-center">Overview</h1>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Property</th>
-              <th scope="col">Type</th>
-              <th scope="col">Average</th>
-              <th scope="col"># of unique occurrences</th>
-              <th scope="col" data-toggle="tooltip" data-placement="bottom" title="Select data that doesn't have any correlation with the data (identifiers)">Ignore?</th>
-              <th scope="col" data-toggle="tooltip" data-placement="bottom" title="Select data that show perfermance or change as a result of other factors (dependent variables)">Dependent?</th>
-            </tr>
-          </thead>
-          <tbody id="propsTable">
-          </tbody>
-        </table>
+    <div class="container-fluid">
+      <div id="propsTable">
+        
       </div>
-
-      <h1 class="display-2 text-center">Graphs</h1>
-<br>
-<br>
-<br>
-      <div id="graphsOut">
-
-
-      </div>
-
-      <br>
-      <br>
-      <br>
-
-
     </div>
 
 
@@ -79,7 +49,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js"></script>
     <script src="app.js"></script>
     <script>
