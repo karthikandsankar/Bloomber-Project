@@ -5,7 +5,7 @@ var options = {
 
   scrollZoom: true, // lets us scroll to zoom in and out - works
   showLink: false, // removes the link to edit on plotly - works
-  modeBarButtonsToRemove: ['toImage', 'zoom2d', 'pan', 'pan2d', 'autoScale2d',],
+  modeBarButtonsToRemove: ['toImage', 'zoom2d', 'autoScale2d','toggleSpikelines','hoverClosestCartesian','hoverCompareCartesian','select2d','lasso2d'],
   //modeBarButtonsToAdd: ['lasso2d'],
   displayLogo: false, // this one also seems to not work
   displayModeBar: true, //this one does work
@@ -137,17 +137,19 @@ function createCell(txt){
 function checkUpdated(){
 
   for(var category in totalArrays){
-    var newVal;
+    var newVal=null;
     var checked=false;
     for(var elem of document.getElementsByName(category)){
       if(elem.checked){
+        console.log(elem);
         checked = true;
         if(totalArrays[category]["rel"] != elem.value){
           newVal = elem.value;
         }
       }
     }
-    console.log(newVal)
+    console.log(category+": "+totalArrays[category]["rel"])
+    console.log(category+": "+newVal)
     if(!checked)
       totalArrays[category]["rel"] = "independent";
     if(newVal){
@@ -164,7 +166,7 @@ function checkUpdated(){
 }
 
 function generateGraphs(){
-  var scrollPos = window.pageYOffset
+  var scrollPos = window.scrollY
   var plotData=[]
   for(var category in totalArrays){
     if(totalArrays[category]["rel"]=="dependent"){
@@ -258,7 +260,7 @@ function generateGraphs(){
   for(var data of plotData){
     createPlot(data.name, data.data, data.lay, data.options,data.bar);
   }
-  setTimeout(window.scrollBy,200,0,scrollPos);
+  setTimeout(window.scrollTo,200,0,scrollPos);
 
   setTimeout(cleanLogo,100);
 }
