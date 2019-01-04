@@ -110,12 +110,18 @@ function addRowToTable(property,type,average,occurrences)
          newInput.value = "dependent"
          newInput.onclick = checkUpdated;
 
-         if(Number(average))
-            newInput.checked = true;
-          else
-            newInput.checked = false;
-
          var cell = document.createElement("td")
+         if(Number(average)){
+            newInput.checked = true;
+          }else{
+            newInput.checked = false;
+            cell.title = "This is not a number and therefore can't be used a dependent variable when graphing"
+            newInput.disabled = true;
+            cell.dataset.toggle="tooltip"
+            cell.dataset.placement="bottom"
+          }
+
+
          cell.appendChild(newInput)
          row.appendChild(cell);
 
