@@ -1,6 +1,7 @@
 var obj;
 var childNums = [];
 var totalArrays={};
+var fuse;
 window.onload = function() {
 	if(sessionStorage.getItem('obj')=="\"undefined\""||sessionStorage.getItem('obj')==null){
     $("#errorMessage").slideDown();
@@ -42,51 +43,66 @@ window.onload = function() {
       minMatchCharLength: 1,
       keys: childNums
     };
-    var fuse = new Fuse(obj, options); // "list" is the item array
+    fuse = new Fuse(obj, options); // "list" is the item array
+
+    for(var cat of childNums){
+        var th = document.createElement("th");
+        th.scope = "col"
+        var textnode=document.createTextNode(cat.charAt(0).toUpperCase() + cat.slice(1));
+        th.appendChild(textnode);
+        document.getElementById("headRow").appendChild(th)
+    }
 
   }
 }
 
-function addRowToTable(property,type,average,occurrences)
-{
-         var tabBody=document.getElementById("propsTable");
-         var row=document.createElement("tr");
+document.getElementById("search").addEventListener("input",function(){
+  var query = document.getElementById("search").value
+  if(query!=""){
+    var tabBody=document.getElementById("propsTable");
+    tabBody.innerHTML = ""
+    var result = fuse.search(query);
+    console.log(result);
+    for(var item of result){
 
-         row.appendChild(createCell(property));
-         row.appendChild(createCell(type));
-         row.appendChild(createCell(average));
-         row.appendChild(createCell(occurrences));
+      var row=document.createElement("tr");
 
-         //Create Checkbox
-         var input = document.createElement("INPUT")
-         input.value = "ignore";
-         input.name = property
-         input.type = "checkbox"
-         input.onclick = checkUpdated;
-         if(occurrences/Object.keys(obj).length>=.9)
-            input.checked = true;
-          else
-            input.checked = false;
-         var cell = document.createElement("td")
-         cell.appendChild(input)
-         row.appendChild(cell);
+      if(item.score <.1){
+        for(var cat of childNums){
+          var found = false;
+          for(var prop in item.item){
+            if(prop == cat){
+              var color = null;
+              for(var match of item.matches){
+                if(match.key == cat){
+                  color="#d8d8d8";
+                }
+              }
+              found=true;
+              row.appendChild(createCell(item.item[prop],color));
+              break;
 
-         var newInput = input.cloneNode();
-         newInput.value = "dependent"
+            }
+          }
+          if(!found)
+            row.appendChild(createCell("",null));
+        }
+        tabBody.appendChild(row);
+      }else{
+        break;
+      }
 
-         if(Number(average))
-            newInput.checked = true;
-          else
-            newInput.checked = false;
+    }
+  }
 
-         var cell = document.createElement("td")
-         cell.appendChild(newInput)
-         row.appendChild(cell);
+});
 
-         tabBody.appendChild(row);
-}
-function createCell(txt){
+
+
+function createCell(txt,color){
   var cell = document.createElement("td");
+  if(color!=null)
+    cell.style.backgroundColor = color;
   var textnode=document.createTextNode(txt);
   cell.appendChild(textnode);
   return cell;
