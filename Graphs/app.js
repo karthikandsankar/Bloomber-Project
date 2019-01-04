@@ -108,6 +108,7 @@ function addRowToTable(property,type,average,occurrences)
 
          var newInput = input.cloneNode();
          newInput.value = "dependent"
+         newInput.onclick = checkUpdated;
 
          if(Number(average))
             newInput.checked = true;
@@ -152,7 +153,7 @@ function checkUpdated(){
       }
     }
   }
-
+  console.log(totalArrays)
   generateGraphs()
 }
 
